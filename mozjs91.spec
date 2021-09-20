@@ -44,9 +44,6 @@ Patch15:        remove-sloppy-m4-detection-from-bundled-autoconf.patch
 # TODO: Check with mozilla for cause of these fails and re-enable spidermonkey compile time checks if needed
 Patch16:        spidermonkey_checks_disable.patch
 
-# armv7 fixes
-Patch17:        definitions_for_user_vfp.patch
-
 # s390x/ppc64 fixes
 Patch19:        0001-Skip-failing-tests-on-ppc64-and-s390x.patch
 
@@ -98,12 +95,6 @@ pushd ../..
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
-
-%ifarch armv7hl
-# Include definitions for user vfp on armv7 as it causes the compilation to fail without them
-# https://bugzilla.mozilla.org/show_bug.cgi?id=1526653
-%patch17 -p1
-%endif
 
 # Fixes for ppc64 and s390x, there is no need to keep it in ifarch here since mozilla tests support ifarch conditions
 %patch19 -p1
