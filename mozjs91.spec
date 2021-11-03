@@ -7,7 +7,7 @@
 %global require_tests     1
 
 %if 0%{?build_with_lto}
-# LTO is default since F33 and F32 package is backported as is, so no LTO there
+# LTO is the default
 %else
 %define _lto_cflags %{nil}
 %endif
@@ -18,7 +18,7 @@
 %endif
 
 Name:           mozjs%{major}
-Version:        91.2.0
+Version:        91.3.0
 Release:        1%{?dist}
 Summary:        SpiderMonkey JavaScript library
 
@@ -237,6 +237,9 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Wed Nov 03 2021 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.3.0-1
+- mozjs91-91.3.0
+
 * Mon Oct 04 2021 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.2.0-1
 - mozjs91-91.2.0
 
