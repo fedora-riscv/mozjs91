@@ -18,13 +18,16 @@
 %endif
 
 Name:           mozjs%{major}
-Version:        91.5.0
-Release:        2%{?dist}
+Version:        91.6.0
+Release:        1%{?dist}
 Summary:        SpiderMonkey JavaScript library
 
 License:        MPLv2.0 and MPLv1.1 and BSD and GPLv2+ and GPLv3+ and LGPLv2+ and AFL and ASL 2.0
 URL:            https://developer.mozilla.org/en-US/docs/Mozilla/Projects/SpiderMonkey
 Source0:        https://ftp.mozilla.org/pub/firefox/releases/%{version}esr/source/firefox-%{version}esr.source.tar.xz
+
+# Known failures with system libicu
+Source1:        known_failures.txt
 
 # Patches from mozjs68, rebased for mozjs78:
 Patch01:        fix-soname.patch
@@ -56,6 +59,7 @@ BuildRequires:  make
 %if !0%{?rhel}
 BuildRequires:  nasm
 %endif
+BuildRequires:  libicu-devel
 BuildRequires:  llvm
 BuildRequires:  rust
 BuildRequires:  perl-devel
@@ -101,6 +105,9 @@ pushd ../..
 
 # Copy out the LICENSE file
 cp LICENSE js/src/
+
+# Copy out file containing known test failures with system libicu
+cp %{SOURCE1} js/src/
 popd
 
 # Remove zlib directory (to be sure using system version)
@@ -136,7 +143,7 @@ sh ../../build/autoconf/autoconf.sh --localdir=/builddir/build/BUILD/firefox-%{v
 chmod +x configure
 
 %configure \
-  --without-system-icu \
+  --with-system-icu \
   --with-system-zlib \
   --disable-tests \
   --disable-strip \
@@ -206,9 +213,9 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %check
 # Run SpiderMonkey tests
 %if 0%{?require_tests}
-%{python3} tests/jstests.py -d -s -t 2400 --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major}
+%{python3} tests/jstests.py -d -s -t 2400 --exclude-file=known_failures.txt --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major}
 %else
-%{python3} tests/jstests.py -d -s -t 2400 --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major} || :
+%{python3} tests/jstests.py -d -s -t 2400 --exclude-file=known_failures.txt --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major} || :
 %endif
 
 # Run basic JIT tests
@@ -237,6 +244,10 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Sun Feb 20 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.6.0-1
+- mozjs91-91.6.0
+- switch to system libicu
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 91.5.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
