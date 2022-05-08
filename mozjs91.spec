@@ -18,7 +18,7 @@
 %endif
 
 Name:           mozjs%{major}
-Version:        91.8.0
+Version:        91.9.0
 Release:        1%{?dist}
 Summary:        SpiderMonkey JavaScript library
 
@@ -244,6 +244,9 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Sun May 08 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.9.0-1
+- mozjs91-91.9.0
+
 * Sat Apr 09 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.8.0-1
 - mozjs91-91.8.0
 
