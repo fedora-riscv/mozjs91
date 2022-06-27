@@ -19,7 +19,7 @@
 
 Name:           mozjs%{major}
 Version:        91.11.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SpiderMonkey JavaScript library
 
 License:        MPLv2.0 and MPLv1.1 and BSD and GPLv2+ and GPLv3+ and LGPLv2+ and AFL and ASL 2.0
@@ -43,9 +43,10 @@ Patch13:        tests-Use-native-TemporaryDirectory.patch
 # Build fixes
 Patch14:        init_patch.patch
 Patch15:        remove-sloppy-m4-detection-from-bundled-autoconf.patch
+Patch16:        0001-Python-Build-Use-r-instead-of-rU-file-read-modes.patch
 
 # TODO: Check with mozilla for cause of these fails and re-enable spidermonkey compile time checks if needed
-Patch16:        spidermonkey_checks_disable.patch
+Patch17:        spidermonkey_checks_disable.patch
 
 # s390x/ppc64 fixes
 Patch19:        0001-Skip-failing-tests-on-ppc64-and-s390x.patch
@@ -99,6 +100,7 @@ pushd ../..
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 # Fixes for ppc64 and s390x, there is no need to keep it in ifarch here since mozilla tests support ifarch conditions
 %patch19 -p1
@@ -244,6 +246,9 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Mon Jun 27 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.11.0-2
+- Fixup Python 3.11 build
+
 * Mon Jun 27 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.11.0-1
 - mozjs91-91.11.0
 
