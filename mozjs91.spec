@@ -19,7 +19,7 @@
 
 Name:           mozjs%{major}
 Version:        91.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        SpiderMonkey JavaScript library
 
 License:        MPLv2.0 and MPLv1.1 and BSD and GPLv2+ and GPLv3+ and LGPLv2+ and AFL and ASL 2.0
@@ -246,6 +246,9 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Mon Aug 01 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.12.0-2
+- Rebuilt for ICU 71.1
+
 * Wed Jul 27 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.12.0-1
 - mozjs91-91.12.0
 
