@@ -51,6 +51,10 @@ Patch17:        spidermonkey_checks_disable.patch
 # s390x/ppc64 fixes
 Patch19:        0001-Skip-failing-tests-on-ppc64-and-s390x.patch
 
+# riscv64 fixes
+Patch20:        tests-skip-some-tests-on-rv64.patch
+Patch21:        Disable-floating-pointcontraction.patch
+
 BuildRequires:  cargo
 BuildRequires:  clang-devel
 BuildRequires:  gcc
@@ -104,6 +108,11 @@ pushd ../..
 
 # Fixes for ppc64 and s390x, there is no need to keep it in ifarch here since mozilla tests support ifarch conditions
 %patch19 -p1
+
+%ifarch riscv64
+%patch20 -p1
+%patch21 -p1
+%endif
 
 # Copy out the LICENSE file
 cp LICENSE js/src/
@@ -246,6 +255,9 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Wed Jan 29 2023 Liu Yang <Yang.Liu.sn@gmail.com> -91.13.0-1.rv64
+- Merge riscv64 support patches from https://github.com/felixonmars/archriscv-packages/commit/29bcb84d1d44e07c11a6c21c01061f2a177d3259
+
 * Wed Jan 25 2023 Liu Yang <Yang.Liu.sn@gmail.com> -91.13.0-1.rv64
 - Add riscv64 arch.
 
