@@ -19,7 +19,7 @@
 
 Name:           mozjs%{major}
 Version:        91.13.0
-Release:        1.rv64%{?dist}
+Release:        3.rv64%{?dist}
 Summary:        SpiderMonkey JavaScript library
 
 License:        MPLv2.0 and MPLv1.1 and BSD and GPLv2+ and GPLv3+ and LGPLv2+ and AFL and ASL 2.0
@@ -255,11 +255,20 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 %{_includedir}/mozjs-%{major}/
 
 %changelog
+* Sat May 13 2023 Liu Yang <Yang.Liu.sn@gmail.com> -91.13.0-3.rv64
+- Merge to follow latest upstream version.
+
 * Wed Jan 29 2023 Liu Yang <Yang.Liu.sn@gmail.com> -91.13.0-1.rv64
 - Merge riscv64 support patches from https://github.com/felixonmars/archriscv-packages/commit/29bcb84d1d44e07c11a6c21c01061f2a177d3259
 
 * Wed Jan 25 2023 Liu Yang <Yang.Liu.sn@gmail.com> -91.13.0-1.rv64
 - Add riscv64 arch.
+
+* Thu Jan 19 2023 Fedora Release Engineering <releng@fedoraproject.org> - 91.13.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_38_Mass_Rebuild
+
+* Sat Dec 31 2022 Pete Walter <pwalter@fedoraproject.org> - 91.13.0-2
+- Rebuild for ICU 72
 
 * Mon Aug 22 2022 Frantisek Zatloukal <fzatlouk@redhat.com> - 91.13.0-1
 - mozjs91-91.13.0
