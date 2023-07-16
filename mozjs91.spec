@@ -48,8 +48,11 @@ Patch16:        0001-Python-Build-Use-r-instead-of-rU-file-read-modes.patch
 # TODO: Check with mozilla for cause of these fails and re-enable spidermonkey compile time checks if needed
 Patch17:        spidermonkey_checks_disable.patch
 
+# Fix tests to work with bundled six
+Patch18:        six-is-always-PY3-don-t-ask-for-it.patch
+
 # s390x/ppc64 fixes
-Patch19:        0001-Skip-failing-tests-on-ppc64-and-s390x.patch
+Patch20:        0001-Skip-failing-tests-on-ppc64-and-s390x.patch
 
 BuildRequires:  cargo
 BuildRequires:  clang-devel
@@ -66,9 +69,8 @@ BuildRequires:  rust
 BuildRequires:  perl-devel
 BuildRequires:  pkgconfig(libffi)
 BuildRequires:  pkgconfig(zlib)
-BuildRequires:  python3-devel
-BuildRequires:  python3-setuptools
-BuildRequires:  python3-six
+# I tried really hard to make Py 3.12 work, but it's a mess to get it working...
+BuildRequires:  python3.11-devel
 BuildRequires:  readline-devel
 BuildRequires:  zip
 
@@ -101,9 +103,10 @@ pushd ../..
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 
 # Fixes for ppc64 and s390x, there is no need to keep it in ifarch here since mozilla tests support ifarch conditions
-%patch19 -p1
+%patch20 -p1
 
 # Copy out the LICENSE file
 cp LICENSE js/src/
@@ -134,7 +137,7 @@ export CARGO_PROFILE_RELEASE_LTO=true
 export CFLAGS="%{optflags}"
 export CXXFLAGS="$CFLAGS"
 export LINKFLAGS="%{?build_ldflags}"
-export PYTHON="%{python3}"
+export PYTHON3="/usr/bin/python3.11"
 
 # Use bundled autoconf
 export M4=m4
@@ -213,11 +216,14 @@ ln -s libmozjs-%{major}.so.0.0.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so.0
 ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 
 %check
+# Use bundled py3 modules since we're using non-default Python (3.11)
+export PYTHONPATH="${PYTHONPATH}:../../third_party/python/"
+
 # Run SpiderMonkey tests
 %if 0%{?require_tests}
-%{python3} tests/jstests.py -d -s -t 2400 --exclude-file=known_failures.txt --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major}
+/usr/bin/python3.11 tests/jstests.py -d -s -t 2400 --exclude-file=known_failures.txt --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major}
 %else
-%{python3} tests/jstests.py -d -s -t 2400 --exclude-file=known_failures.txt --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major} || :
+/usr/bin/python3.11 tests/jstests.py -d -s -t 2400 --exclude-file=known_failures.txt --no-progress --wpt=disabled ../../js/src/dist/bin/js%{major} || :
 %endif
 
 # Run basic JIT tests
@@ -225,13 +231,13 @@ ln -s libmozjs-%{major}.so.0 %{buildroot}%{_libdir}/libmozjs-%{major}.so
 
 # large-arraybuffers/basic.js fails on s390x
 %ifarch s390 s390x
-%{python3} jit-test/jit_test.py -s -t 2400 --no-progress -x large-arraybuffers/basic.js ../../js/src/dist/bin/js%{major} basic
+/usr/bin/python3.11 jit-test/jit_test.py -s -t 2400 --no-progress -x large-arraybuffers/basic.js ../../js/src/dist/bin/js%{major} basic
 %else
-%{python3} jit-test/jit_test.py -s -t 2400 --no-progress ../../js/src/dist/bin/js%{major} basic
+/usr/bin/python3.11 jit-test/jit_test.py -s -t 2400 --no-progress ../../js/src/dist/bin/js%{major} basic
 %endif
 
 %else
-%{python3} jit-test/jit_test.py -s -t 2400 --no-progress ../../js/src/dist/bin/js%{major} basic || :
+/usr/bin/python3.11 jit-test/jit_test.py -s -t 2400 --no-progress ../../js/src/dist/bin/js%{major} basic || :
 %endif
 
 %files
